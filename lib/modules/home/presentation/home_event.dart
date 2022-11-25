@@ -7,6 +7,8 @@ abstract class HomeEvent {}
 
 class HomeFetchList extends HomeEvent {}
 
+class HomeError extends HomeEvent {}
+
 class HomeDeleteItemFromList extends HomeEvent {
   final User user;
   HomeDeleteItemFromList({
