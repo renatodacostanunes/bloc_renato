@@ -25,63 +25,65 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
-        body: MultiBlocListener(
-            listeners: [
-              BlocListener(
-                bloc: bloc,
-                listener: (context, state) {
-                  if (state is HomeStateSuccess) {
-                    print("seila");
-                  }
-                  if (state is HomeStateFailure) {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: const Text("Erro"),
-                            content: Text(state.message),
-                          );
-                        });
-                  }
-                },
-              )
-            ],
-            child: BlocBuilder<HomeBloc, HomeState>(
-                bloc: bloc,
-                builder: (context, state) {
-                  if (state is HomeStateSuccess) {
-                    return ListView.builder(
-                      itemCount: state.users.length,
-                      itemBuilder: ((context, index) {
-                        return ListTile(
-                          onLongPress: () {
-                            bloc.add(HomeDeleteItemFromList(
-                                user: state.users[index]));
-                          },
-                          title: Text(state.users[index].name),
-                          subtitle: Text(state.users[index].age.toString()),
-                        );
-                      }),
-                    );
-                  }
-                  if (state is HomeStateLoading) {
-                    return Shimmer.fromColors(
-                        baseColor: Colors.black12,
-                        highlightColor: Colors.white,
-                        child: ListView.builder(
-                          itemCount: 10,
-                          itemBuilder: ((context, index) {
-                            return const ListTile(
-                              title: Text("state.users[index].name"),
-                              subtitle:
-                                  Text("state.users[index].age.toString()"),
-                            );
-                          }),
-                        ));
-                  } else {
-                    return const Text("não deu");
-                  }
-                })));
+      appBar: AppBar(),
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener(
+            bloc: bloc,
+            listener: (context, state) {
+              if (state is HomeStateSuccess) {
+                print("success");
+              }
+              if (state is HomeStateFailure) {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text("Erro"),
+                        content: Text(state.message),
+                      );
+                    });
+              }
+            },
+          ),
+        ],
+        child: BlocBuilder<HomeBloc, HomeState>(
+          bloc: bloc,
+          builder: (context, state) {
+            if (state is HomeStateSuccess) {
+              return ListView.builder(
+                itemCount: state.users.length,
+                itemBuilder: ((context, index) {
+                  return ListTile(
+                    onLongPress: () {
+                      bloc.add(
+                          HomeDeleteItemFromList(user: state.users[index]));
+                    },
+                    title: Text(state.users[index].name),
+                    subtitle: Text(state.users[index].age.toString()),
+                  );
+                }),
+              );
+            }
+            if (state is HomeStateLoading) {
+              return Shimmer.fromColors(
+                  baseColor: Colors.black12,
+                  highlightColor: Colors.white,
+                  child: ListView.builder(
+                    itemCount: 10,
+                    itemBuilder: ((context, index) {
+                      return const ListTile(
+                        title: Text("state.users[index].name"),
+                        subtitle: Text("state.users[index].age.toString()"),
+                      );
+                    }),
+                  ));
+            } else {
+              return const Text("Erro, não atendeu os estados disponíveis...");
+            }
+          },
+        ),
+      ),
+    );
   }
 }
