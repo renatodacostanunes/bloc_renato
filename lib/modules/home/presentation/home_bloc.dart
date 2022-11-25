@@ -10,8 +10,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<HomeDeleteItemFromList>((event, emit) async {
       await _deleteUser(emit, event.user);
     });
+
     on<HomeFetchList>((event, emit) async {
       await _getUsers(emit);
+    });
+
+    on<HomeError>((event, emit) async {
+      await _getError(emit);
     });
   }
 
@@ -29,8 +34,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<void> _deleteUser(Emitter<HomeState> emit, User user) async {
     emit(HomeStateLoading());
     users.removeWhere((element) => element.age == user.age);
-    await Future.delayed(const Duration(seconds: 3), () {
+    await Future.delayed(const Duration(seconds: 2), () {
       emit(HomeStateSuccess(users: users));
+    });
+  }
+
+  Future<void> _getError(Emitter<HomeState> emit) async {
+    emit(HomeStateLoading());
+    await Future.delayed(const Duration(seconds: 2), () {
+      emit(HomeStateFailure(message: "Erro proposital"));
     });
   }
 }
