@@ -35,6 +35,7 @@ class _HomePageState extends State<HomePage> {
                 print("success");
               }
               if (state is HomeStateFailure) {
+                print("failure");
                 showDialog(
                     context: context,
                     builder: (context) {
@@ -43,6 +44,10 @@ class _HomePageState extends State<HomePage> {
                         content: Text(state.message),
                       );
                     });
+                Future.delayed(const Duration(seconds: 3)).then((value) {
+                  Modular.to.pop();
+                  bloc.add(HomeFetchList());
+                });
               }
             },
           ),
@@ -58,6 +63,9 @@ class _HomePageState extends State<HomePage> {
                     onLongPress: () {
                       bloc.add(
                           HomeDeleteItemFromList(user: state.users[index]));
+                    },
+                    onTap: () {
+                      bloc.add(HomeError());
                     },
                     title: Text(state.users[index].name),
                     subtitle: Text(state.users[index].age.toString()),
@@ -78,9 +86,8 @@ class _HomePageState extends State<HomePage> {
                       );
                     }),
                   ));
-            } else {
-              return const Text("Erro, não atendeu os estados disponíveis...");
             }
+            return const Text("Erro, não atendeu os estados disponíveis...");
           },
         ),
       ),
